@@ -41,5 +41,27 @@ namespace Presentation.Controllers
             }
             
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(AuthReq req)
+        {
+            try
+            {
+                AuthResponse auth = await _services.GetAuthentication(req);
+
+                if (auth == null)
+                {
+                    return new JsonResult(new { Message = "Credenciales Incorrectas" }) { StatusCode = 400 };
+                }
+
+                return new JsonResult(new { Message = "Ha iniciado sesión" }) { StatusCode = 200};
+
+            }
+            catch (AggregateException)
+            {
+                return new JsonResult(new { Message = "Problema interno del servidor." }) { StatusCode = 500 };
+            }
+
+        }
     }
 }
