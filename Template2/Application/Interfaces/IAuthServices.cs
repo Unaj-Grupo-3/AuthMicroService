@@ -5,7 +5,7 @@ namespace Application.Interfaces
 {
     public interface IAuthServices
     {
-        Task<AuthResponse2> CreateAuthentication(AuthReq req);
+        Task<AuthResponse> CreateAuthentication(AuthReq req);
         Task<AuthResponse> GetAuthentication(AuthReq req);
     }
 }

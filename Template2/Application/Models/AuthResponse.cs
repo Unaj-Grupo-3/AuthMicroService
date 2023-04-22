@@ -1,6 +1,4 @@
-﻿
-
-namespace Application.Models
+﻿namespace Application.Models
 {
     public class AuthResponse
     {

@@ -14,11 +14,13 @@ namespace Infrastructure.Commands
             _context = context;
         }
 
-        public async Task InsertAuthentication(Authentication auth)
+        public async Task<Authentication> InsertAuthentication(Authentication auth)
         {
             _context.Add(auth);
 
             await _context.SaveChangesAsync();
+
+            return auth;
         }
     }
 }

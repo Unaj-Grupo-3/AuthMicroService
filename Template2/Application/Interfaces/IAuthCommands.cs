@@ -5,6 +5,6 @@ namespace Application.Interfaces
 {
     public interface IAuthCommands
     {
-        Task InsertAuthentication(Authentication auth);
+        Task<Authentication> InsertAuthentication(Authentication auth);
     }
 }
