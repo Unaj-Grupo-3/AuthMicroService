@@ -18,7 +18,7 @@ namespace Application.UseCases
             _encrypt = encrypt;
         }
 
-        public async Task<AuthResponse2> CreateAuthentication(AuthReq req)
+        public async Task<AuthResponse> CreateAuthentication(AuthReq req)
         {
             _encrypt.CreatePasswordHash(req.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -29,10 +29,11 @@ namespace Application.UseCases
                 PasswordSalt = passwordSalt
             };
 
-            await _commands.InsertAuthentication(auth);
+            Authentication create = await _commands.InsertAuthentication(auth);
 
-            AuthResponse2 authResponse = new AuthResponse2
+            AuthResponse authResponse = new AuthResponse
             {
+                Id = create.AuthId,
                 Email = req.Email
             };
 

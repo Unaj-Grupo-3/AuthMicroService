@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "VwDn+l2K20+s372g81cUVknOVHpmqsEb7U1vt5hYB7FGlK3J2meEiqQ8M7tp82Scbj2H+ohGuRvF1btleWe/wg==",
+  "dgSpecHash": "nITmHKzVlGHceC6w5zOwV7Ug9KiWWhB5mYwEL1WsgUODMD3L6POWAYPKk1lox5i9EiZSeYQro1V6QVjCdeIeSQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Gabo\\Documents\\Backup\\unaj\\ProyectoDeSoftware_1\\2023-Primer-cuatri\\Grupal\\AppDeCitas\\AuthMicroService\\Template2\\Domain\\Domain.csproj",
+  "projectFilePath": "C:\\Users\\User\\Desktop\\PS(Grupal)\\Microservicios\\Auth\\Template2\\Domain\\Domain.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
