@@ -1,6 +1,9 @@
 ﻿using Application.Interfaces;
 using Application.Models;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Presentation.Controllers
 {
@@ -10,11 +13,18 @@ namespace Presentation.Controllers
     {
         private readonly IAuthServices _services;
         private readonly IValidateServices _validations;
+        private readonly ITokenServices _tokenServices;
+        private readonly IConfiguration _configuration;
+        private readonly IUserApiServices _userApiServices;
 
-        public AuthController(IAuthServices services, IValidateServices validations)
+        public AuthController(IUserApiServices userApiServices,IAuthServices services, IValidateServices validations, ITokenServices tokenServices, IConfiguration configuration)
         {
             _services = services;
             _validations = validations;
+            _tokenServices = tokenServices;
+            _configuration = configuration;
+            _userApiServices = userApiServices;
+            
         }
 
         [HttpPost]
@@ -35,7 +45,7 @@ namespace Presentation.Controllers
                     return new JsonResult(new { Message = "Existen errores en la petición.", Response = errores }) { StatusCode = 400 };
                 }
             }
-            catch (AggregateException)
+            catch (Exception)
             {
                 return new JsonResult(new { Message = "Problema interno del servidor." }) { StatusCode = 500 };
             }
@@ -54,10 +64,23 @@ namespace Presentation.Controllers
                     return new JsonResult(new { Message = "Credenciales Incorrectas" }) { StatusCode = 400 };
                 }
 
-                return new JsonResult(new { Message = "Ha iniciado sesión" }) { StatusCode = 200};
+                var jwt = _configuration.GetSection("Jwt").Get<Jwt>();
+
+                bool postIsValid = await _userApiServices.GetUserByAuthId(auth.Id);
+
+                if (!postIsValid)
+                {
+                    return new JsonResult(new { Message = _userApiServices.GetMessage(), Response = _userApiServices.GetResponse() }) { StatusCode = _userApiServices.GetStatusCode() };
+                }
+
+                int userId = int.Parse(_userApiServices.GetResponse().RootElement.GetProperty("userId").ToString());
+
+                var token = _tokenServices.GenerateToken(jwt, auth, userId);
+
+                return new JsonResult(new { Message = "Ha iniciado sesión", Token = token }) { StatusCode = 200};
 
             }
-            catch (AggregateException)
+            catch (Exception)
             {
                 return new JsonResult(new { Message = "Problema interno del servidor." }) { StatusCode = 500 };
             }

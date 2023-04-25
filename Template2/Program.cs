@@ -5,6 +5,14 @@ using Infrastructure.Persistance;
 using Infrastructure.Queries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +25,25 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Expreso de las diez - Microservicio de autenticación", Version = "v1" });
 });
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["JwtIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtKey"]))
+    };
+});
+
 
 
 //Custom
@@ -36,12 +63,15 @@ else
 }
 
 builder.Services.AddDbContext<ExpresoDbContext>(options => options.UseSqlServer(connectionString));
+
+
 builder.Services.AddTransient<IAuthCommands, AuthCommands>();
 builder.Services.AddTransient<IAuthQueries, AuthQueries>();
 builder.Services.AddTransient<IEncryptServices, EncryptServices>();
 builder.Services.AddTransient<IAuthServices, AuthServices>();
 builder.Services.AddTransient<IValidateServices, ValidateServices>();
-
+builder.Services.AddTransient<ITokenServices, TokenServices>();
+builder.Services.AddTransient<IUserApiServices, UserApiServices>();
 
 
 var app = builder.Build();
