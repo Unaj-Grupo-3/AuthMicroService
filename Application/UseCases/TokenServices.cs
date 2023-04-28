@@ -17,20 +17,17 @@ namespace Application.UseCases
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, jwt.Subject),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                 new Claim("UserId", userId.ToString()),
                 new Claim("AuthId", auth.Id.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key));
 
-            var singIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+            var singIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(
-                    jwt.Issuer,
-                    jwt.Audience,
+                    null, 
+                    null,
                     claims,
                     expires: DateTime.Now.AddHours(1),
                     signingCredentials: singIn
