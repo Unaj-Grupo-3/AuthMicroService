@@ -6,11 +6,6 @@ using Infrastructure.Queries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -48,20 +43,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 
 //Custom
-var connectionString = "";
-var gab = "C:\\Users\\Gabo\\Documents\\Backup\\unaj\\ProyectoDeSoftware_1\\2023-Primer-cuatri\\Grupal\\AppDeCitas\\AuthMicroService\\Template2\\Template2";
+var connectionString = builder.Configuration["ConnectionString"];
 
-if (Directory.GetCurrentDirectory() == gab)
-{
-    // Agregense si usan MSSQL en docker
-    connectionString =
-        builder.Configuration["ConnectionString2"];
-}
-else
-{
-    // MSSQL running locally
-    connectionString = builder.Configuration["ConnectionString"];
-}
 
 builder.Services.AddDbContext<ExpresoDbContext>(options => options.UseSqlServer(connectionString));
 

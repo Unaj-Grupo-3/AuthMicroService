@@ -26,7 +26,7 @@ namespace Application.UseCases
             var singIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(
-                    null, 
+                    null,
                     null,
                     claims,
                     expires: DateTime.Now.AddHours(1),
