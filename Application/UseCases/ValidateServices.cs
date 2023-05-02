@@ -16,27 +16,29 @@ namespace Application.UseCases
             errors = new Dictionary<string, string>();
         }
 
-        public async Task<IDictionary<bool, IDictionary<string, string>>> Validate(AuthReq authReq)
+        public async Task<IDictionary<string, string>> Validate(AuthReq authReq)
         {
-            bool password = await ValidateLenght(authReq.Password, "Password", 32, 8);
-            var mail = await VerifyMail(authReq.Email);
+            var password = await CheckPassword(authReq.Password);
+            bool mail = await VerifyMail(authReq.Email);
 
-            
-            IDictionary<bool, IDictionary<string, string>> newDictionary = new Dictionary<bool, IDictionary<string, string>>() { };
-
-            if (password && mail)
-            {
-                newDictionary.Add(true, errors);
-                return newDictionary;
-            }
-            else
-            {
-                newDictionary.Add(false, errors);
-                return newDictionary;
-            }
+            return errors;
         }
 
+        public async Task<IDictionary<string, string>> CheckPassword(string passwd)
+        {
+            bool len = await ValidateLenght(passwd, "Password", 32, 8);
+            Match matchNumeros = Regex.Match(passwd, @"\d");
+            Match matchMayusculas = Regex.Match(passwd, @"[A-Z]");
+            Match matchMinusculas = Regex.Match(passwd, @"[a-z]");
+            Match matchEspeciales = Regex.Match(passwd, @"[ñÑ\-_¿.#¡/()*,.;:@]");
 
+            if (!matchNumeros.Success || !matchMayusculas.Success || !matchMinusculas.Success || !matchEspeciales.Success)
+            {
+                errors.Add("passwd", "La contraseña debera contener por lo menos un número, una mayuscula, una minuscula y un caracter especial ej: ñÑ\\-_¿.#¡/()*,.;:@.");
+            }
+
+            return errors;
+        }
         public async Task<bool> ValidateLenght(string verify, string tag, int maxLenght)
         {
             if (verify.Length > maxLenght)

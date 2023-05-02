@@ -65,5 +65,34 @@ namespace Application.UseCases
 
             return response;
         }
+
+        public async Task<AuthResponse> GetMail(Guid authId)
+        {
+            var response = await _queries.SelectMailByAuthId(authId);
+
+            return response;
+        }
+
+        public async Task<AuthResponse> ChangePassword(Guid authId, ChangePassReq req)
+        {
+            _encrypt.CreatePasswordHash(req.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            var query = await _commands.AlterAuth(authId, passwordHash, passwordSalt);
+
+            if (query != null && query.PasswordHash == passwordHash && query.PasswordSalt == passwordSalt)
+            {
+                AuthResponse resp = new AuthResponse
+                {
+                    Id = query.AuthId,
+                    Email = query.Email
+                };
+
+                return resp;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

@@ -1,9 +1,12 @@
 ﻿using Application.Interfaces;
 using Application.Models;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace Presentation.Controllers
 {
@@ -32,17 +35,16 @@ namespace Presentation.Controllers
         {
             try
             {
-                var validation = _validations.Validate(req).Result;
+                var errors = _validations.Validate(req).Result;
 
-                if (validation.ElementAt(0).Key)
+                if (errors.Count > 0)
                 {
-                    var response = await _services.CreateAuthentication(req);
-                    return new JsonResult(new { Message = "Exito.", Response = response }) { StatusCode = 201 };
+                    return new JsonResult(new { Message = "Existen errores en la petición.", Response = errors }) { StatusCode = 400 };
                 }
                 else
                 {
-                    var errores = validation.ElementAt(0).Value;
-                    return new JsonResult(new { Message = "Existen errores en la petición.", Response = errores }) { StatusCode = 400 };
+                    var response = await _services.CreateAuthentication(req);
+                    return new JsonResult(new { Message = "Exito.", Response = response }) { StatusCode = 201 };
                 }
             }
             catch (Exception)
@@ -84,7 +86,37 @@ namespace Presentation.Controllers
             {
                 return new JsonResult(new { Message = "Problema interno del servidor." }) { StatusCode = 500 };
             }
+        }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetMail()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var authId = Guid.Parse(identity.Claims.FirstOrDefault(x => x.Type == "AuthId").Value);
+
+            var response = await _services.GetMail(authId);
+
+            return new JsonResult(response);
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePassReq req)
+        {
+            var errors = await _validations.CheckPassword(req.Password);
+
+            if (errors.Count > 0)
+            {
+                return new JsonResult(new { Message = "Existen errores en la petición", Response = errors }) { StatusCode = 400 };
+            }
+
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var authId = Guid.Parse(identity.Claims.FirstOrDefault(x => x.Type == "AuthId").Value);
+
+            var response = await _services.ChangePassword(authId, req);
+
+            return new JsonResult(response);
         }
     }
 }
