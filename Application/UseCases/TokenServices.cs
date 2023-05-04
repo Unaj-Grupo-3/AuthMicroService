@@ -13,11 +13,11 @@ namespace Application.UseCases
     public class TokenServices : ITokenServices
     {
 
-        public string GenerateToken(Jwt jwt, AuthResponse auth, int userId)
+        public string GenerateToken(Jwt jwt, AuthResponse auth)
         {
             var claims = new[]
             {
-                new Claim("UserId", userId.ToString()),
+                new Claim("UserId", auth.UserId.ToString()),
                 new Claim("AuthId", auth.Id.ToString())
             };
 

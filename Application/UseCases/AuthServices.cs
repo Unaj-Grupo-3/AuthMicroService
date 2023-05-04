@@ -34,7 +34,9 @@ namespace Application.UseCases
             AuthResponse authResponse = new AuthResponse
             {
                 Id = create.AuthId,
-                Email = req.Email
+                Email = req.Email,
+                UserId = create.UserId,
+
             };
 
             return authResponse;
@@ -60,7 +62,8 @@ namespace Application.UseCases
             AuthResponse response = new AuthResponse
             {
                 Id = auth.AuthId,
-                Email = auth.Email
+                Email = auth.Email,
+                UserId = auth.UserId
             };
 
             return response;
