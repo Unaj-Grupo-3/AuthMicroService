@@ -9,6 +9,6 @@ namespace Application.Interfaces
 
         bool ValidateToken(ClaimsIdentity identity, int userId);
 
-        string GenerateToken(Jwt jwt, AuthResponse auth, int userId);
+        string GenerateToken(Jwt jwt, AuthResponse auth);
     }
 }

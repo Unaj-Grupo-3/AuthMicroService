@@ -1,10 +1,5 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Persistance
 {
@@ -24,6 +19,8 @@ namespace Infrastructure.Persistance
             modelbuilder.Entity<Authentication>(entity =>
             {
                 entity.HasKey(e => e.AuthId);
+                entity.Property(e => e.UserId).ValueGeneratedOnAdd();
+
             });
         }
     }
