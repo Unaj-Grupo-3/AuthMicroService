@@ -24,6 +24,7 @@ namespace Application.UseCases
 
             Authentication auth = new Authentication
             {
+                UserId = Guid.NewGuid(),
                 Email = req.Email,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt
@@ -33,6 +34,7 @@ namespace Application.UseCases
 
             AuthResponse authResponse = new AuthResponse
             {
+                UserId = create.UserId,
                 Id = create.AuthId,
                 Email = req.Email
             };
@@ -59,6 +61,7 @@ namespace Application.UseCases
 
             AuthResponse response = new AuthResponse
             {
+                UserId = auth.UserId,
                 Id = auth.AuthId,
                 Email = auth.Email
             };
@@ -83,6 +86,7 @@ namespace Application.UseCases
             {
                 AuthResponse resp = new AuthResponse
                 {
+                    UserId = query.UserId,
                     Id = query.AuthId,
                     Email = query.Email
                 };

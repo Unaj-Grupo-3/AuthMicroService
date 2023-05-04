@@ -13,7 +13,7 @@ namespace Application.UseCases
     public class TokenServices : ITokenServices
     {
 
-        public string GenerateToken(Jwt jwt, AuthResponse auth, int userId)
+        public string GenerateToken(Jwt jwt, AuthResponse auth, Guid userId)
         {
             var claims = new[]
             {
@@ -36,13 +36,13 @@ namespace Application.UseCases
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public bool ValidateToken(ClaimsIdentity identity, int userId)
+        public bool ValidateToken(ClaimsIdentity identity, Guid userId)
         {
             try
             {
-                var id = identity.Claims.FirstOrDefault(x => x.Type == "UserId").Value;
+                var id = Guid.Parse(identity.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
 
-                if (id != userId.ToString())
+                if (id != userId)
                 {
                     throw new ArgumentException();
                 }

@@ -7,8 +7,8 @@ namespace Application.Interfaces
     public interface ITokenServices
     {
 
-        bool ValidateToken(ClaimsIdentity identity, int userId);
+        bool ValidateToken(ClaimsIdentity identity, Guid userId);
 
-        string GenerateToken(Jwt jwt, AuthResponse auth, int userId);
+        string GenerateToken(Jwt jwt, AuthResponse auth, Guid userId);
     }
 }

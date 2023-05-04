@@ -68,16 +68,7 @@ namespace Presentation.Controllers
 
                 var jwt = _configuration.GetSection("Jwt").Get<Jwt>();
 
-                bool postIsValid = await _userApiServices.GetUserByAuthId(auth.Id);
-
-                if (!postIsValid)
-                {
-                    return new JsonResult(new { Message = _userApiServices.GetMessage(), Response = _userApiServices.GetResponse() }) { StatusCode = _userApiServices.GetStatusCode() };
-                }
-
-                int userId = int.Parse(_userApiServices.GetResponse().RootElement.GetProperty("userId").ToString());
-
-                var token = _tokenServices.GenerateToken(jwt, auth, userId);
+                var token = _tokenServices.GenerateToken(jwt, auth, auth.UserId);
 
                 return new JsonResult(new { Message = "Ha iniciado sesión", Token = token }) { StatusCode = 200};
 
