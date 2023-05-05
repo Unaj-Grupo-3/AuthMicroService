@@ -29,7 +29,7 @@ namespace Application.UseCases
                     null,
                     null,
                     claims,
-                    expires: DateTime.Now.AddHours(1),
+                    expires: DateTime.Now.AddMonths(4),
                     signingCredentials: singIn
                 );
 
