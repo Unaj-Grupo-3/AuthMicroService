@@ -30,8 +30,9 @@ namespace Infrastructure.Queries
                                             .Select(e => new AuthResponse
                                             {
                                                 Id = e.AuthId,
-                                                Email = e.Email
-                                            }).FirstOrDefaultAsync();
+                                                Email = e.Email,
+                                                UserId = e.UserId
+                                            }).FirstOrDefaultAsync(x => x.Id == authId);
 
             return response;
         }
