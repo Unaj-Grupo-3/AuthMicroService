@@ -66,12 +66,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 });
 
 
-
-//Custom
-var connectionString = builder.Configuration["ConnectionString"];
-
-
-builder.Services.AddDbContext<ExpresoDbContext>(options => options.UseSqlServer(connectionString));
+//Custom    
+builder.Services.AddDbContext<ExpresoDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 
 builder.Services.AddTransient<IAuthCommands, AuthCommands>();
@@ -81,6 +80,7 @@ builder.Services.AddTransient<IAuthServices, AuthServices>();
 builder.Services.AddTransient<IValidateServices, ValidateServices>();
 builder.Services.AddTransient<ITokenServices, TokenServices>();
 builder.Services.AddTransient<IUserApiServices, UserApiServices>();
+builder.Services.AddScoped<IEmailSender,EmailSender>();
 
 
 var app = builder.Build();

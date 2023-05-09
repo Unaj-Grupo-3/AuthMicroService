@@ -19,15 +19,17 @@ namespace Presentation.Controllers
         private readonly ITokenServices _tokenServices;
         private readonly IConfiguration _configuration;
         private readonly IUserApiServices _userApiServices;
+        private readonly IEmailSender _emailSender;
 
-        public AuthController(IUserApiServices userApiServices,IAuthServices services, IValidateServices validations, ITokenServices tokenServices, IConfiguration configuration)
+        public AuthController(IUserApiServices userApiServices,IAuthServices services, IValidateServices validations, ITokenServices tokenServices,
+            IConfiguration configuration, IEmailSender emailSender)
         {
             _services = services;
             _validations = validations;
             _tokenServices = tokenServices;
             _configuration = configuration;
             _userApiServices = userApiServices;
-            
+            _emailSender = emailSender;
         }
 
         [HttpPost]
@@ -44,7 +46,20 @@ namespace Presentation.Controllers
                 else
                 {
                     var response = await _services.CreateAuthentication(req);
+                    string emailSubject = "ExpressoDeLasDiez ---> Cuenta Creada Satisfactoriamente";
+                    string toEmail = response.Email;
+                    string[] partes = response.Email.Split('@');
+                    string userName = partes[0];
+                    string emailMesagge = "Hola " + userName +"\n" +
+                        "¡Bienvenido/a a nuestra plataforma! \n" +
+                        "Nos complace informarte que tu cuenta ha sido creada exitosamente.\n" +
+                        " Ahora puedes iniciar sesión en nuestra plataforma y comenzar a explorar todas las características y funcionalidades que ofrecemos.\n" +
+                        " Si tienes alguna pregunta o problema, no dudes en ponerte en contacto con nosotros.Estaremos encantados de ayudarte en todo lo que podamos.\n" +
+                        "¡Que tengas un excelente día!\n" +
+                        "Saludos cordiales.";
+                    await _emailSender.SendEmail(emailSubject,toEmail,userName,emailMesagge);
                     return new JsonResult(new { Message = "Exito.", Response = response }) { StatusCode = 201 };
+
                 }
             }
             catch (Exception)
