@@ -1,6 +1,4 @@
 ﻿using Application.Interfaces;
-using Application.Models;
-using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace Application.UseCases

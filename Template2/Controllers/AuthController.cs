@@ -3,10 +3,7 @@ using Application.Models;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
-using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace Presentation.Controllers
 {
@@ -18,17 +15,15 @@ namespace Presentation.Controllers
         private readonly IValidateServices _validations;
         private readonly ITokenServices _tokenServices;
         private readonly IConfiguration _configuration;
-        private readonly IUserApiServices _userApiServices;
         private readonly IEmailSender _emailSender;
 
-        public AuthController(IUserApiServices userApiServices,IAuthServices services, IValidateServices validations, ITokenServices tokenServices,
+        public AuthController(IAuthServices services, IValidateServices validations, ITokenServices tokenServices,
             IConfiguration configuration, IEmailSender emailSender)
         {
             _services = services;
             _validations = validations;
             _tokenServices = tokenServices;
             _configuration = configuration;
-            _userApiServices = userApiServices;
             _emailSender = emailSender;
         }
 
