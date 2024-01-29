@@ -1,5 +1,4 @@
 ﻿
-using Application.Models;
 using System.Text.Json;
 
 namespace Application.Interfaces
